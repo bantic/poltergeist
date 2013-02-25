@@ -42,6 +42,15 @@ describe Capybara::Session do
         node.text.should == "Test"
       end
 
+      context 'when calling `pushState` on window.history' do
+        it "sets 'state' object on window.history" do
+          @session.visit('/poltergeist/simple')
+          @session.execute_script "window.history.pushState({path:'/testpath'},null,'/testpath')"
+
+          @session.execute_script('window.history.state.path').should eq '/testpath'
+        end
+      end
+
       context "when someone (*cough* prototype *cough*) messes with Array#toJSON" do
         before do
           @session.visit("/poltergeist/index")
